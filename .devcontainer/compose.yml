@@ -1,0 +1,14 @@
+services:
+  timetable-app:
+    image: mcr.microsoft.com/vscode/devcontainers/javascript-node:latest
+    init: true
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ..:/home:cached
+      - node-modules:/home/node_modules
+    working_dir: /home
+
+volumes:
+  node-modules:
