@@ -22,9 +22,9 @@ const parseFile = () => {
   // csvファイル解析
   if (files.value) {
     Papa.parse(files.value[0], {
-      complete: (result) => {
+      complete: (result: any) => {
         let index: number = 1
-        result.data.forEach((v) => {
+        result.data.forEach((v: any) => {
           if (Array.isArray(v) && v !== null) {
             const object = {
               id: index,
