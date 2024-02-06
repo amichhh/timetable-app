@@ -10,7 +10,7 @@ import Result from "@/views/Result.vue"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/timetable-app/", redirect: "/start" },
+    { path: "/", redirect: "/start" },
     { path: "/start", name: "Start", component: Start },
     { path: "/band/import", name: "BandImport", component: BandImport },
     { path: "/band/confirm", name: "BandConfirm", component: BandConfirm },
