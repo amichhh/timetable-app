@@ -24,3 +24,10 @@ const color = () => {
     {{ store.message }}
   </v-snackbar>
 </template>
+
+<style scoped>
+.v-snackbar {
+  font-family: "M PLUS 1p", sans-serif;
+  font-weight: 500;
+}
+</style>

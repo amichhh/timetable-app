@@ -40,6 +40,13 @@ const parseFile = () => {
               ],
               slot: typeof Number(v[8]) === "number" ? Number(v[8]) : null
             }
+            if (object.type?.localeCompare("既存")) {
+              object.type = "EXISTING"
+            } else if (object.type?.localeCompare("企画")) {
+              object.type = "PLANNING"
+            } else {
+              object.type = "NONE"
+            }
             if (isBand(object)) {
               store.bands.push(object)
               object.member.forEach((v) => {

@@ -153,8 +153,9 @@ const setEvent = () => {
               max="60"
             ></v-text-field>
           </v-col>
-          <v-col class="mt-2">分（0分～60分の間で入力してください）</v-col>
+          <v-col class="mt-2">分 </v-col>
         </v-row>
+        <div class="text-caption">※0分～60分の間で入力してください</div>
       </v-col>
     </v-row>
     <v-row dense>

@@ -64,5 +64,7 @@ watchEffect(() => {
 <style scoped>
 .v-card {
   background-color: rgba(255, 255, 255, 0);
+  font-family: "M PLUS 1p", sans-serif;
+  font-weight: 500;
 }
 </style>

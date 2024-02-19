@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { useStore } from "@/stores"
-import { computed, ref } from "vue"
+import { ref } from "vue"
 import TimeSelector from "@/views/parts/TimeSelector.vue"
-import { Time, type Condition } from "@/types"
+import { Time, Condition } from "@/types"
 import { mdiCloseCircleOutline, mdiChevronLeft, mdiChevronRight } from "@mdi/js"
 
 const store = useStore()
 
 const target = ref("")
-const memberOptions = computed(() => store.members)
+const memberOptions = store.members
 
-const startTime = ref(store.event.startTime)
-const endTime = ref(store.event.startTime)
+const startTime = ref<Time>()
+const endTime = ref<Time>()
 
 const addCondition = () => {
   if (startTime.value && endTime.value) {
@@ -28,7 +28,7 @@ const addCondition = () => {
     } else {
       const condition: Condition = {
         id: store.conditionIndex,
-        type: "時間指定",
+        type: "TIME",
         target: target.value,
         start: new Time(startTime.value.hour, startTime.value.minute),
         end: new Time(endTime.value.hour, endTime.value.minute)
@@ -36,8 +36,6 @@ const addCondition = () => {
       store.conditions.push(condition)
       store.conditionIndex += 1
       target.value = ""
-      startTime.value = new Time(store.event.startTime.hour, store.event.startTime.minute)
-      endTime.value = new Time(store.event.startTime.hour, store.event.startTime.minute)
     }
   }
 }
@@ -56,11 +54,11 @@ const deleteCondition = (id: number) => {
     </v-row>
     <v-row>
       <v-col>
-        <v-card variant="outlined">
+        <v-card variant="outlined" class="ma-1">
           <v-card-text>
             <v-row dense>
-              <v-col cols="1">
-                <v-chip size="large" color="#053f5e">時間指定</v-chip>
+              <v-col cols="2">
+                <v-chip color="#053f5e">時間指定</v-chip>
               </v-col>
               <v-col cols="3">
                 <v-row dense>
@@ -82,19 +80,19 @@ const deleteCondition = (id: number) => {
               <v-col cols="2">
                 <TimeSelector
                   :label="'出演可能時間（開始）'"
-                  :time="startTime"
+                  :time="store.event.startTime"
                   @time="(time: Time) => (startTime = time)"
                 />
               </v-col>
-              <v-col cols="1" class="mt-10">～</v-col>
+              <div class="mt-10">～</div>
               <v-col cols="2">
                 <TimeSelector
                   :label="'出演可能時間（終了）'"
-                  :time="endTime"
+                  :time="store.event.startTime"
                   @time="(time: Time) => (endTime = time)"
                 />
               </v-col>
-              <v-col class="text-right mt-8">
+              <v-col class="mt-7 text-right">
                 <v-btn variant="flat" color="#053f5e" @click="addCondition">保存</v-btn>
               </v-col>
             </v-row>
@@ -103,23 +101,30 @@ const deleteCondition = (id: number) => {
       </v-col>
     </v-row>
 
-    <v-row v-for="item in store.conditions" :key="item.target">
-      <v-col cols="6">
-        <v-card variant="flat" color="#053f5e" density="compact">
+    <v-row>
+      <v-col>
+        <v-card
+          v-for="item in store.conditions"
+          :key="item.target"
+          variant="flat"
+          color="#053f5e"
+          density="compact"
+          class="mx-3 px-8 my-2"
+        >
           <v-card-text>
             <v-row dense>
               <v-col cols="2">
-                <v-chip>{{ item.type }}</v-chip>
+                <v-chip v-if="item.type === 'TIME'">時間指定</v-chip>
               </v-col>
-              <v-col>
+              <v-col class="mt-2">
                 {{ item.target }}
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" class="mt-2">
                 {{ item.start.hour }}:{{ item.start.minute }} ～ {{ item.end.hour }}:{{
                   item.end.minute
                 }}
               </v-col>
-              <v-col cols="1">
+              <v-col cols="1" class="text-right">
                 <v-btn
                   variant="flat"
                   size="small"
@@ -133,6 +138,7 @@ const deleteCondition = (id: number) => {
         </v-card>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col class="text-left">
         <v-btn

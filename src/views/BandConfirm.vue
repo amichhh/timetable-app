@@ -45,12 +45,12 @@ const back = () => {
             <tr>
               <th>バンド名</th>
               <th class="text-center">種別</th>
-              <th>メンバー１</th>
-              <th>メンバー２</th>
-              <th>メンバー３</th>
-              <th>メンバー４</th>
-              <th>メンバー５</th>
-              <th>メンバー６</th>
+              <th>メンバー1</th>
+              <th>メンバー2</th>
+              <th>メンバー3</th>
+              <th>メンバー4</th>
+              <th>メンバー5</th>
+              <th>メンバー6</th>
               <th class="text-center">時間枠</th>
             </tr>
           </thead>
@@ -58,9 +58,8 @@ const back = () => {
             <tr v-for="item in store.bands" :key="item.name">
               <td>{{ item.name }}</td>
               <td class="text-center">
-                <v-chip color="#053f5e">
-                  {{ item.type }}
-                </v-chip>
+                <v-chip v-if="item.type === 'EXISTING'" color="#053f5e"> 既存 </v-chip>
+                <v-chip v-if="item.type === 'PLANNING'" color="#a68c00"> 企画 </v-chip>
               </td>
               <td>{{ item.member[0] }}</td>
               <td>{{ item.member[1] }}</td>

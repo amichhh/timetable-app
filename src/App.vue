@@ -22,9 +22,16 @@ import Notification from "@/views/parts/Notification.vue"
   margin-left: 25px;
 }
 
+.v-app-bar-title {
+  font-family: "M PLUS 1p", sans-serif;
+  font-weight: 900;
+}
+
 .v-main {
   background-color: #a9beca;
   background-image: linear-gradient(90deg, #a9beca 0%, #faf1bb 100%);
+  font-family: "M PLUS 1p", sans-serif;
+  font-weight: 500;
 }
 
 .content {

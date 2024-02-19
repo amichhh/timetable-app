@@ -7,6 +7,8 @@ import { mdiChevronLeft } from "@mdi/js"
 
 const store = useStore()
 
+const upperLimit = 50000
+
 const sortBand = () => {
   const loopCount = ref(0)
   const isContinue = ref(true)
@@ -17,7 +19,7 @@ const sortBand = () => {
     loopCount.value++
     result.value = []
     // ループ試行回数を制限（無限ループを防ぐ）
-    if (loopCount.value > 50000) {
+    if (loopCount.value > upperLimit) {
       store.message = "タイムテーブル作成に失敗しました。もう一度やり直してください。"
       store.messageStatus = "WARN"
       store.snackbar = true
@@ -42,7 +44,7 @@ const sortBand = () => {
       if ((index + 1) % store.event.windingCount === 0) {
         const winding: Band = {
           name: "マイク巻き",
-          type: "",
+          type: "NONE",
           member: [],
           slot: 5,
           appearance: new Time(currentTime.hour, currentTime.minute)
@@ -55,7 +57,7 @@ const sortBand = () => {
       if (currentTime.isAfter(store.event.breakStartTime) && breakCount.value === 0) {
         const breakTime: Band = {
           name: "休憩",
-          type: "",
+          type: "NONE",
           member: [],
           slot: store.event.breakTime,
           appearance: new Time(currentTime.hour, currentTime.minute)
@@ -87,7 +89,7 @@ const checkCondition = (bands: Band[]): boolean => {
   const errorCount = ref(0)
   store.conditions.forEach((condition) => {
     switch (condition.type) {
-      case "時間指定":
+      case "TIME":
         bands
           .filter((band) => band.member.includes(condition.target))
           .forEach((band) => {
@@ -124,11 +126,11 @@ const checkCondition = (bands: Band[]): boolean => {
             並べ替え条件はありません。
           </v-card-text>
           <v-card-text v-else class="ma-2">
-            <v-row v-for="item in store.conditions" :key="item.target">
-              <v-col cols="2">
-                <v-chip>{{ item.type }}</v-chip>
+            <v-row v-for="item in store.conditions" :key="item.target" class="mt-1">
+              <v-col cols="3">
+                <v-chip v-if="item.type === 'TIME'">時間指定</v-chip>
               </v-col>
-              <v-col cols="2">{{ item.target }}</v-col>
+              <v-col cols="4">{{ item.target }}</v-col>
               <v-col>
                 {{ item.start.hour }}:{{ item.start.minute }}
                 ～
@@ -152,7 +154,14 @@ const checkCondition = (bands: Band[]): boolean => {
             </v-row>
             <v-row dense>
               <v-col>開催日</v-col>
-              <v-col>{{ store.event?.date.toLocaleDateString() }}</v-col>
+              <v-col
+                >{{
+                  store.event?.date.toLocaleDateString() +
+                  " (" +
+                  ["日", "月", "火", "水", "木", "金", "土"][store.event?.date.getDay()] +
+                  ")"
+                }}
+              </v-col>
             </v-row>
             <v-row dense>
               <v-col>開始時間</v-col>

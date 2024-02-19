@@ -8,15 +8,23 @@ const downloadCSV = () => {
   const header =
     "時間, バンド名, 種別, メンバー1, メンバー2, メンバー3, メンバー4, メンバー5, メンバー6, 時間枠\n"
   const rows = store.sortedBands
-    .map(
-      (v) =>
+    .map((v) => {
+      let bandType = ""
+      if (v.type === "EXISTING") bandType = "既存"
+      if (v.type === "PLANNING") bandType = "企画"
+      if (v.type === "NONE") {
+        for (let i = 0; i < 6; i++) {
+          v.member[i] = ""
+        }
+      }
+      return (
         v.appearance.hour +
         ":" +
         v.appearance.minute +
         "," +
         v.name +
         "," +
-        v.type +
+        bandType +
         "," +
         v.member[0] +
         "," +
@@ -31,7 +39,8 @@ const downloadCSV = () => {
         v.member[5] +
         "," +
         v.slot
-    )
+      )
+    })
     .join("\n")
   const content = title + header + rows
   const bom = new Uint8Array([0xef, 0xbb, 0xbf])
@@ -40,8 +49,9 @@ const downloadCSV = () => {
   link.href = window.URL.createObjectURL(blob)
   link.download =
     store.event.date.toISOString().slice(0, 10).split("-").join("") +
+    "_" +
     store.event.title +
-    "タイムテーブル"
+    "_タイムテーブル"
   link.click()
 }
 </script>
@@ -50,7 +60,10 @@ const downloadCSV = () => {
   <v-container fluid>
     <v-row>
       <v-col>
-        <v-alert color="#053f5e" text="6. 確認してください。"></v-alert>
+        <v-alert
+          color="#053f5e"
+          text="6. 結果を確認してください。CSVファイル形式でダウンロードできます。"
+        ></v-alert>
       </v-col>
     </v-row>
     <v-row>
@@ -61,12 +74,12 @@ const downloadCSV = () => {
               <th>出演時間</th>
               <th>バンド名</th>
               <th class="text-center">種別</th>
-              <th>メンバー１</th>
-              <th>メンバー２</th>
-              <th>メンバー３</th>
-              <th>メンバー４</th>
-              <th>メンバー５</th>
-              <th>メンバー６</th>
+              <th>メンバー1</th>
+              <th>メンバー2</th>
+              <th>メンバー3</th>
+              <th>メンバー4</th>
+              <th>メンバー5</th>
+              <th>メンバー6</th>
               <th class="text-center">時間枠</th>
             </tr>
           </thead>
@@ -75,9 +88,8 @@ const downloadCSV = () => {
               <td>{{ item.appearance.hour }}:{{ item.appearance.minute }}</td>
               <td>{{ item.name }}</td>
               <td class="text-center">
-                <v-chip color="#053f5e">
-                  {{ item.type }}
-                </v-chip>
+                <v-chip v-if="item.type === 'EXISTING'" color="#053f5e"> 既存 </v-chip>
+                <v-chip v-if="item.type === 'PLANNING'" color="#a68c00"> 企画 </v-chip>
               </td>
               <td>{{ item.member[0] }}</td>
               <td>{{ item.member[1] }}</td>
@@ -93,9 +105,9 @@ const downloadCSV = () => {
     </v-row>
     <v-row>
       <v-col class="text-center">
-        <v-btn size="large" variant="flat" color="#053f5e" rounded @click="downloadCSV"
-          >ダウンロード</v-btn
-        >
+        <v-btn size="large" variant="flat" color="#053f5e" rounded @click="downloadCSV">
+          ダウンロード
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>

@@ -2,17 +2,15 @@ import dayjs from "dayjs"
 
 /** バンド */
 export type Band = {
-  /** バンド名 */
   name: string
-  /** 既存or企画 */
-  type: string
-  /** バンドメンバー */
+  type: BandType
   member: string[]
-  /** 時間枠 */
   slot: number
-  /** 出演開始時間 */
   appearance: Time
 }
+
+/** バンド種別 */
+export type BandType = "EXISTING" | "PLANNING" | "NONE"
 
 /** イベント設定 */
 export class EventSetting {
@@ -53,7 +51,6 @@ export class Time {
   advance(this: Time, forward: number): Time {
     if (Number(this.minute) + forward < 60) {
       this.minute = `0${Number(this.minute) + forward}`.slice(-2)
-      console.log("A")
     } else {
       this.hour = `0${Number(this.hour) + 1}`.slice(-2)
       this.minute = `0${Number(this.minute) + (forward - 60)}`.slice(-2)
@@ -63,13 +60,26 @@ export class Time {
 }
 
 /** 並べ替え条件 */
-export type Condition = {
+export class Condition {
   id: number
-  type: string
+  type: ConditionType
   target: string
   start: Time
   end: Time
+  constructor(id: number, type: ConditionType, target: string, start: Time, end: Time) {
+    this.id = id
+    this.type = type
+    this.target = target
+    this.start = start
+    this.end = end
+  }
+  static createTimeCondition(id: number) {
+    return new Condition(id, "TIME", "-", new Time("0", "0"), new Time("0", "0"))
+  }
 }
+
+/** 並べ替え条件種別 */
+export type ConditionType = "TIME"
 
 /** メッセージ状態 */
 export type MessageStatus = "ERROR" | "WARN" | "SUCCESS"
